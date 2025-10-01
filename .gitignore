@@ -1,0 +1,99 @@
+cat << 'EOF' > .gitignore
+# === Maven ===
+/target/
+!.mvn/wrapper/maven-wrapper.jar
+.mvn/wrapper/maven-wrapper.properties
+.mvn/wrapper/MavenWrapperDownloader.java
+
+# Wrapper (no ignores mvnw, es útil para CI)
+!mvnw
+!mvnw.cmd
+
+# === Eclipse / STS ===
+.classpath
+.project
+.settings/
+.apt_generated/
+.factorypath
+.springBeans
+.tern-project
+.sts4-cache/
+
+# === IntelliJ / VSCode (por si alguien usa) ===
+.idea/
+*.iml
+*.iws
+.vscode/
+**/.DS_Store
+
+# === Sistema operativo ===
+Thumbs.db
+ehthumbs.db
+.DS_Store
+.DS_Store?
+Icon?
+._*
+.Spotlight-V100
+.Trashes
+
+# === Java ===
+*.class
+*.log
+hs_err_pid*
+replay_pid*
+
+# === Logs & runtime ===
+/logs/
+*.log
+*.out
+*.pid
+
+# === Test / Coverage ===
+/surefire-reports/
+/failsafe-reports/
+/jacoco.exec
+/jacoco-report.xml
+/coverage/
+.site/
+
+# === Build tools ===
+/dependency-reduced-pom.xml
+
+# === Spring Boot empaquetados ===
+/*.jar
+/*.war
+
+# === Config sensibles (usa variables de entorno o vault) ===
+application.properties
+application.yml
+application-*.properties
+application-*.yml
+
+# Mantén un ejemplo versionado
+!application-example.properties
+!application-example.yml
+
+# === Certs / claves / llaveros ===
+*.jks
+*.p12
+*.pem
+*.key
+*.keystore
+*.crt
+
+# === Subidas / temporales ===
+/uploads/
+/tmp/
+/temp/
+
+# === Base de datos / dumps ===
+*.sql
+*.sqlite
+*.db
+
+# === Node/Angular (si algún día conviertes a monorepo)
+/frontend/node_modules/
+/frontend/dist/
+/frontend/.angular/cache/
+/frontend/.env
+EOF

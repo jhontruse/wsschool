@@ -4,6 +4,7 @@ import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.Optional;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.event.EventListener;
 import org.springframework.security.authentication.event.AuthenticationFailureBadCredentialsEvent;
 import org.springframework.security.authentication.event.AuthenticationSuccessEvent;
@@ -20,8 +21,13 @@ public class AuthenticationEventListener {
 
     private final IUsuarioRepository iUsuarioRepository;
 
-    private static final int MAX_ATTEMPTS = 5;
-    private static final long TEMP_LOCK_MINUTES = 30; // si usas bloqueo temporal
+    // private static final int MAX_ATTEMPTS = 5;
+    @Value("${security.jwt.max-attempts}")
+    private String MAX_ATTEMPTS;
+
+    // private static final long TEMP_LOCK_MINUTES = 30; // si usas bloqueo temporal
+    @Value("${security.jwt.temp-lock-minutes}")
+    private String TEMP_LOCK_MINUTES;
 
     @EventListener
     public void onFailure(AuthenticationFailureBadCredentialsEvent event) {
@@ -30,12 +36,12 @@ public class AuthenticationEventListener {
         // si tu política incluye bloqueo temporal por expiración del lock, puedes
         // revisar/desbloquear antes
         iUsuarioRepository.unlockIfLockExpired(username, LocalDateTime.now(ZoneId.of("America/Lima")),
-                TEMP_LOCK_MINUTES);
+                Integer.parseInt(TEMP_LOCK_MINUTES));
 
         iUsuarioRepository.incrementFailedAttempts(username);
 
         Optional<Usuario> usuario = iUsuarioRepository.getUsuarioByUsuario(username);
-        if (usuario.isPresent() && usuario.get().getFailedLoginAttempts() >= MAX_ATTEMPTS) {
+        if (usuario.isPresent() && usuario.get().getFailedLoginAttempts() >= Long.parseLong(MAX_ATTEMPTS)) {
             iUsuarioRepository.lockUser(username, LocalDateTime.now(ZoneId.of("America/Lima")));
         }
     }

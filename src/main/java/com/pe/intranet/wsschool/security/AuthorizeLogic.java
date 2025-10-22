@@ -20,8 +20,7 @@ public class AuthorizeLogic {
     // Usa nombres cortos y consistentes; evita hardcodear en switches.
     private static final Map<String, Set<String>> REQUIRED_ROLES = Map.ofEntries(
             // Usuarios: administración completa
-            Map.entry("findAllUsuarios", roles("ADMIN")),
-            // Lecturas varias
+            Map.entry("findMenuByUsername", roles("ALUMNO")),
             Map.entry("findById", roles("USER", "DBA")),
             Map.entry("getBydId", roles("USER", "DBA"))
 

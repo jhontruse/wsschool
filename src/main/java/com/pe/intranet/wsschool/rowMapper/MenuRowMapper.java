@@ -2,6 +2,7 @@
 package com.pe.intranet.wsschool.rowMapper;
 
 import java.sql.ResultSet;
+import java.sql.SQLException;
 
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Component;
@@ -15,7 +16,7 @@ public class MenuRowMapper implements RowMapper<Menu> {
 
     @Override
     @Nullable
-    public Menu mapRow(ResultSet rs, int rowNum) throws java.sql.SQLException {
+    public Menu mapRow(ResultSet rs, int rowNum) throws SQLException {
         return Menu.builder()
                 .idMenu(ResultSetUtils.uuid(rs, "ID_MENU"))
                 .nombre(ResultSetUtils.str(rs, "NOMBRE"))
@@ -30,7 +31,7 @@ public class MenuRowMapper implements RowMapper<Menu> {
     }
 
     @Nullable
-    public Menu mapRow(ResultSet rs, String preFix) throws java.sql.SQLException {
+    public Menu mapRow(ResultSet rs, String preFix) throws SQLException {
         return Menu.builder()
                 .idMenu(ResultSetUtils.uuid(rs, preFix + "ID_MENU"))
                 .nombre(ResultSetUtils.str(rs, preFix + "NOMBRE"))

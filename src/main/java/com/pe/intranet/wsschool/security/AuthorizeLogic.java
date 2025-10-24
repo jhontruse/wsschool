@@ -21,6 +21,7 @@ public class AuthorizeLogic {
     private static final Map<String, Set<String>> REQUIRED_ROLES = Map.ofEntries(
             // Usuarios: administración completa
             Map.entry("findMenuByUsername", roles("ALUMNO")),
+            Map.entry("findPersonaByUsername", roles("ALUMNO")),
             Map.entry("findById", roles("USER", "DBA")),
             Map.entry("getBydId", roles("USER", "DBA"))
 

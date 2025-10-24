@@ -30,59 +30,64 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class SecurityConfig {
 
-    private final JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
-    private final RestAccessDeniedHandler restAccessDeniedHandler;
-    private final UserDetailsService jwtUserDetailsService;
-    private final JwtRequestFilter jwtRequestFilter;
+        private final JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
+        private final RestAccessDeniedHandler restAccessDeniedHandler;
+        private final UserDetailsService jwtUserDetailsService;
+        private final JwtRequestFilter jwtRequestFilter;
 
-    // --- AuthenticationManager (de la configuración autogenerada) ---
-    @Bean
-    public AuthenticationManager authenticationManager(
-            AuthenticationConfiguration cfg)
-            throws Exception {
-        return cfg.getAuthenticationManager();
-    }
+        // --- AuthenticationManager (de la configuración autogenerada) ---
+        @Bean
+        public AuthenticationManager authenticationManager(
+                        AuthenticationConfiguration cfg)
+                        throws Exception {
+                return cfg.getAuthenticationManager();
+        }
 
-    @Bean
-    public static PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder();
-    }
+        @Bean
+        public static PasswordEncoder passwordEncoder() {
+                return new BCryptPasswordEncoder();
+        }
 
-    @Autowired
-    public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
-        auth.userDetailsService(jwtUserDetailsService).passwordEncoder(passwordEncoder());
-    }
+        @Autowired
+        public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
+                auth.userDetailsService(jwtUserDetailsService).passwordEncoder(passwordEncoder());
+        }
 
-    @Bean
-    public DaoAuthenticationProvider authProvider(UserDetailsService uds,
-            PasswordEncoder encoder) {
-        DaoAuthenticationProvider p = new DaoAuthenticationProvider();
-        p.setUserDetailsService(uds);
-        p.setPasswordEncoder(encoder);
-        p.setPreAuthenticationChecks(new AccountStatusUserDetailsChecker()); // usatus flags
-        return p;
-    }
+        @Bean
+        public DaoAuthenticationProvider authProvider(UserDetailsService uds,
+                        PasswordEncoder encoder) {
+                DaoAuthenticationProvider p = new DaoAuthenticationProvider();
+                p.setUserDetailsService(uds);
+                p.setPasswordEncoder(encoder);
+                p.setPreAuthenticationChecks(new AccountStatusUserDetailsChecker()); // usatus flags
+                return p;
+        }
 
-    @Bean
-    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-        // Desde Spring Boot 3.1+
-        http
-                .csrf(AbstractHttpConfigurer::disable)
-                .exceptionHandling(eh -> eh
-                        .authenticationEntryPoint(jwtAuthenticationEntryPoint) // 401 JSON
-                        .accessDeniedHandler(restAccessDeniedHandler) // 403 JSON
-                )
-                .authorizeHttpRequests(req -> req
-                        .requestMatchers("/login").permitAll()
-                        .requestMatchers("/mail/**").permitAll()
-                        .requestMatchers("/auth/**").permitAll()
-                        .anyRequest().authenticated())
-                .formLogin(AbstractHttpConfigurer::disable);
-        ;
+        @Bean
+        public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+                // Desde Spring Boot 3.1+
+                http
+                                .csrf(AbstractHttpConfigurer::disable)
+                                .exceptionHandling(eh -> eh
+                                                .authenticationEntryPoint(jwtAuthenticationEntryPoint) // 401 JSON
+                                                .accessDeniedHandler(restAccessDeniedHandler) // 403 JSON
+                                )
+                                .authorizeHttpRequests(req -> req
+                                                .requestMatchers("/login").permitAll()
+                                                .requestMatchers("/mail/**").permitAll()
+                                                .requestMatchers("/auth/**").permitAll()
+                                                .requestMatchers("/swagger-ui/**").permitAll()
+                                                .requestMatchers("/v3/api-docs/**").permitAll()
+                                                .requestMatchers("/swagger-ui.html").permitAll()
+                                                .requestMatchers("/swagger-resources/**").permitAll()
+                                                .requestMatchers("/webjars/**").permitAll()
+                                                .anyRequest().authenticated())
+                                .formLogin(AbstractHttpConfigurer::disable);
+                ;
 
-        http.addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class);
+                http.addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class);
 
-        return http.build();
-    }
+                return http.build();
+        }
 
 }
